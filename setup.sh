@@ -1,5 +1,6 @@
 pip3 install uv
 uv venv
-.venv/Scripts/activate
+ls
+.venv/scripts/activate
 uv sync
 fastapi run main.py
