@@ -1,6 +1,5 @@
 pip3 install uv
-uv venv
+uv export --format requirements-txt > requirements.txt
 ls
-.venv/bin/activate
-uv sync
+pip3 install -r requirements.txt
 fastapi run main.py
