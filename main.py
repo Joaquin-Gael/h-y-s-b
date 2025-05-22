@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 
 from pathlib import Path
 
@@ -8,8 +8,8 @@ app = FastAPI()
 
 class SPAStaticFiles(StaticFiles):
     def __init__(self):
-        super().__init__(directory=Path(__file__).parent / "dist", html=True, check_dir=True)
-        self._index_file = "index.html"
+        super().__init__(directory=Path(__file__).parent / "dist/browser", html=True, check_dir=True)
+        self._index_file = "home/index.html"
 
         self.app = super().__call__
 
@@ -19,6 +19,7 @@ class SPAStaticFiles(StaticFiles):
         request = Request(scope, receive)
 
         path = request.url.path.lstrip("/")
+        print(path)
 
         full_path = (Path(self.directory) / path).resolve()
         if full_path.exists():
@@ -29,5 +30,8 @@ class SPAStaticFiles(StaticFiles):
         response = FileResponse(index_path)
         await response(scope, receive, send)
 
+@app.get("/")
+async def root():
+    return RedirectResponse("/home")
 
 app.mount("/", SPAStaticFiles(), name="static")
